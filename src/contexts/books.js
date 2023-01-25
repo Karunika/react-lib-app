@@ -60,6 +60,19 @@ const BooksContextProvider = ({ children }) => {
         setBooks(books => books.filter(book => book.id !== id));
     }
 
+    const removeUser = (user) => {
+        setBooks(books => (
+            books.map(book => {
+                if (book.user === user) {
+                    return {
+                        ...book,
+                        user: ''
+                    }
+                } else 
+                    return book
+            })
+        ))
+    }
     useEffect(() => {
         const lsBooks = localStorage.getItem('books');
 
@@ -90,7 +103,8 @@ const BooksContextProvider = ({ children }) => {
             getBookInfo,
             editBookUser,
             createBook,
-            deleteBook
+            deleteBook,
+            removeUser
         }}>
             {children}
         </BooksContext.Provider>

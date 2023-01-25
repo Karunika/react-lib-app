@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useUsersContext } from '../contexts/users';
 import { useBooksContext } from '../contexts/books';
 
 const Dashboard = () => {
-    const { activeUser, logOut } = useUsersContext();
-    const { getUserBooks, getBooks, borrowBook, unborrowBook, getBookInfo } = useBooksContext();
+    const { activeUser, logOut, deleteUser } = useUsersContext();
+    const { getUserBooks, getBooks, borrowBook, unborrowBook, getBookInfo, removeUser } = useBooksContext();
     const [selectedBook, setSelectedBook] = useState(null);
+    const navigate = useNavigate();
 
     const borrowButtonHandler = () => {
         borrowBook(selectedBook, activeUser?.user);
@@ -16,12 +17,19 @@ const Dashboard = () => {
         unborrowBook(selectedBook, activeUser?.user);
     }
 
+    const deleteAccountButtonHandler = () => {
+        removeUser(activeUser.user);
+        deleteUser(activeUser.user);
+        navigate('/');
+    }
+
     return activeUser ? (
         <div className='flex'>
             <div>
                 username:
                 {activeUser?.user}
                 <button onClick={logOut}>logout</button>
+                <button onClick={deleteAccountButtonHandler}>delete</button>
             </div>
             <div className='flex border'>
                 {getBooks().map(book => (

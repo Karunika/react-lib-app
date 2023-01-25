@@ -42,6 +42,10 @@ const UsersContextProvider = ({ children }) => {
         setActiveUser(null);
     }
 
+    const deleteUser = (user) => {
+        setUsers(users => users.filter(u => u.user !== user));
+    }
+
     useEffect(() => {
         const lsUsers = localStorage.getItem('users');
 
@@ -63,7 +67,14 @@ const UsersContextProvider = ({ children }) => {
     }, [users]);
 
     return (
-        <UsersContext.Provider value={{ users, activeUser, loginUser, logOut, registerUser }}>
+        <UsersContext.Provider value={{
+            users,
+            activeUser,
+            loginUser,
+            logOut,
+            registerUser,
+            deleteUser
+        }}>
             {children}
         </UsersContext.Provider>
     )
