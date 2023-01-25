@@ -15,7 +15,7 @@ const BooksContextProvider = ({ children }) => {
 
     const borrowBook = (id, user) => {
         setBooks(books => books.map(book => {
-            book.user = book.id === id ? user : '';
+            book.user = book.id === id ? user : book.user;
             return book;
         }));
     }
