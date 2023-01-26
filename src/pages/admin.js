@@ -5,7 +5,7 @@ import { useBooksContext } from '../contexts/books';
 
 const Admin = () => {
     const { activeUser, logOut, users } = useUsersContext();
-    const { books, getBookInfo, editBookUser, deleteBook } = useBooksContext();
+    const { books, getBookInfo, editBookUser, deleteBook, assignBook } = useBooksContext();
     const [selectedBook, setSelectedBook] = useState(null);
 
     const changeUser = (user = '') => {
@@ -15,6 +15,10 @@ const Admin = () => {
     const deleteBookButtonHandler = () => {
         setSelectedBook(null);
         deleteBook(selectedBook);
+    }
+
+    const assignBookButtonHandler = () => {
+        assignBook(selectedBook);
     }
 
     return activeUser ? (
@@ -54,7 +58,8 @@ const Admin = () => {
                                     </li>
                             })}
                         </ul>
-                        <button onClick={deleteBookButtonHandler}>delete book</button>
+                        <button onClick={deleteBookButtonHandler}>delete</button>
+                        <button onClick={assignBookButtonHandler}>assign</button>
                     </div>
                 )}
             </div>

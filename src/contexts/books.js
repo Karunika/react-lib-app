@@ -5,12 +5,47 @@ const BooksContext = createContext([]);
 const BooksContextProvider = ({ children }) => {
     const [books, setBooks] = useState(null);
 
+    const checkTimeout = () => {
+        setBooks(books =>
+            books.map(book => {
+                if (Date().now() > +book.reserved) {
+                    book.leased = '';
+                    book.reserved = '';
+                }
+                return book;
+            }
+        ));
+    }
+
     const getUserBooks = (user) => {
         return books.filter(book => book.user === user);
     }
 
     const getBooks = () => {
-        return books.filter(book => book.user === '');
+        return books.filter(book => book.user === '' && books.leased === '');
+    }
+
+    const leaseBook = (id, user) => {
+        setBooks(books => books.map(book => {
+            if (book.id === id) {
+                book.leased = user;
+                book.reserved = new Date().now() + 7*24*60*60*100;
+            }
+
+            return book;
+        }));
+    }
+
+    const assignBook = (id) => {
+        setBooks(books => books.map(book => {
+            if (book.id === id) {
+                book.user = book.leased;
+                book.leased = '';
+                book.reserved = '';
+            }
+
+            return book;
+        }));
     }
 
     const borrowBook = (id, user) => {
@@ -84,8 +119,10 @@ const BooksContextProvider = ({ children }) => {
             fetch('books.json', { headers })
                 .then(response => response.json())
                 .then(setBooks);
-        } else
+        } else {
             setBooks(JSON.parse(lsBooks));
+            checkTimeout();
+        }
 
     }, []);
 
@@ -104,7 +141,9 @@ const BooksContextProvider = ({ children }) => {
             editBookUser,
             createBook,
             deleteBook,
-            removeUser
+            removeUser,
+            leaseBook,
+            assignBook
         }}>
             {children}
         </BooksContext.Provider>

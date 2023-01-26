@@ -5,9 +5,13 @@ import { useBooksContext } from '../contexts/books';
 
 const Dashboard = () => {
     const { activeUser, logOut, deleteUser } = useUsersContext();
-    const { getUserBooks, getBooks, borrowBook, unborrowBook, getBookInfo, removeUser } = useBooksContext();
+    const { getUserBooks, getBooks, borrowBook, unborrowBook, getBookInfo, removeUser, leaseBook } = useBooksContext();
     const [selectedBook, setSelectedBook] = useState(null);
     const navigate = useNavigate();
+
+    const leaseButtonHandler = () => {
+        leaseBook(selectedBook, activeUser?.user);
+    }
 
     const borrowButtonHandler = () => {
         borrowBook(selectedBook, activeUser?.user);
@@ -43,6 +47,7 @@ const Dashboard = () => {
                 ))}
             </div>
             <div>
+                <button onClick={leaseButtonHandler}>lease</button>
                 <button onClick={borrowButtonHandler}>borrow</button>
                 <button onClick={removeButtonHandler}>remove</button>
             </div>
