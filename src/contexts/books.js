@@ -6,14 +6,14 @@ const BooksContextProvider = ({ children }) => {
     const [books, setBooks] = useState(null);
 
     const checkTimeout = () => {
-        setBooks(books =>
+        setBooks(books => (
             books.map(book => {
-                if (Date().now() > +book.reserved) {
+                if (Date.now() > +book.reserved) {
                     book.leased = '';
                     book.reserved = '';
                 }
                 return book;
-            }
+            })
         ));
     }
 
@@ -22,14 +22,14 @@ const BooksContextProvider = ({ children }) => {
     }
 
     const getBooks = () => {
-        return books.filter(book => book.user === '' && books.leased === '');
+        return books.filter(book => book.user === '' && book.leased === '');
     }
 
     const leaseBook = (id, user) => {
         setBooks(books => books.map(book => {
             if (book.id === id) {
                 book.leased = user;
-                book.reserved = new Date().now() + 7*24*60*60*100;
+                book.reserved = Date.now() + 40*1000;
             }
 
             return book;
@@ -38,7 +38,7 @@ const BooksContextProvider = ({ children }) => {
 
     const assignBook = (id) => {
         setBooks(books => books.map(book => {
-            if (book.id === id) {
+            if (book.id === id && Date.now() < +book.reserved) {
                 book.user = book.leased;
                 book.leased = '';
                 book.reserved = '';
@@ -101,13 +101,20 @@ const BooksContextProvider = ({ children }) => {
                 if (book.user === user) {
                     return {
                         ...book,
-                        user: ''
+                        user: '',
+                    }
+                } else if (book.leased === user) {
+                    return {
+                        ...book,
+                        leased: '',
+                        reserved: ''
                     }
                 } else 
                     return book
             })
         ))
     }
+
     useEffect(() => {
         const lsBooks = localStorage.getItem('books');
 
